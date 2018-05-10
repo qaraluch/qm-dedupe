@@ -10,6 +10,12 @@ module.exports = {
         description: "Deletes the `node_modules` directory",
         script: series(cleanNodeModules)
       }
+    },
+    test: {
+      default: {
+        description: "ava test",
+        script: "ava --verbose"
+      }
     }
   },
   options: {
