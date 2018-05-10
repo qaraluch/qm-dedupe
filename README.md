@@ -15,7 +15,7 @@ git clone https://github.com/qaraluch/qm-dedupe.git
 ## Usage
 
 ```js
-const { dedupe, dedupeExtensive } = require("./index.js");
+const { dedupe, dedupeExtensive } = require("../dedupe/index.js");
 
 const arrayWithoutDuplicates = dedupe(array, hasher);
 // default: hasher = JSON.stringify

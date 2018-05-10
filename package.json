@@ -1,5 +1,5 @@
 {
-  "name": "XXX",
+  "name": "dedupe",
   "version": "0.1.0",
   "description": "YYY",
   "main": "index.js",
@@ -12,10 +12,10 @@
     "email": "prezenciq@gmail.com",
     "url": "https://github.com/qaraluch"
   },
-  "homepage": "https://github.com/qaraluch/qm-XXX",
+  "homepage": "https://github.com/qaraluch/qm-dedupe",
   "repository": {
     "type": "git",
-    "url": "https://github.com/qaraluch/qm-XXX.git"
+    "url": "https://github.com/qaraluch/qm-dedupe.git"
   },
   "files": [
     "index.js"
