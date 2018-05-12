@@ -9,7 +9,7 @@ This module is published in good faith and for learning purpose only. The code i
 ## Installation
 
 ```
-git clone https://github.com/qaraluch/qm-dedupe.git
+git clone https://github.com/qaraluch/qm-dedupe.git dedupe
 ```
 
 ## Usage
