@@ -9,13 +9,13 @@ This module is published in good faith and for learning purpose only. The code i
 ## Installation
 
 ```
-git clone https://github.com/qaraluch/qm-dedupe.git dedupe
+npm i -S qm-dedupe
 ```
 
 ## Usage
 
 ```js
-const { dedupe, dedupeExtensive } = require("../dedupe/index.js");
+const { dedupe, dedupeExtensive } = require("qm-dedupe");
 
 const arrayWithoutDuplicates = dedupe(array, hasher);
 // default: hasher = JSON.stringify
