@@ -35,6 +35,10 @@ const dedupeExtensiveResult = dedupeExtensive({
 // -> [[unique elements],[removed elements]]
 ```
 
+## Secondary Check Function Usage
+
+Module is able to control duplicates by passing function to `secondaryCheckFunction` options property. When it is not passed the deduped object contains only unique elements controlled by function passed to `chooseToCompare` options property. By passing Secondary Check Function you are able to manipulate duplicates by value of another object property. This functions acts the same like `Array.prototype.filter`. Item which passes provided test is moved to _removed elements_ of function's output.
+
 For more info read the source code and test files :page_facing_up:.
 
 ## Credits
