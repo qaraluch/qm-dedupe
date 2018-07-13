@@ -14,7 +14,7 @@ function dedupe(array, hasher = JSON.stringify) {
 function dedupeExtensive({
   hasher = JSON.stringify,
   chooseToCompare,
-  secondaryCheckFunction,
+  secondaryCheckFunction = item => item,
   collection
 } = {}) {
   const valuesToCheck = collection.map(chooseAndHash(hasher, chooseToCompare));

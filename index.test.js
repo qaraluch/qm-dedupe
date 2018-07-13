@@ -99,15 +99,16 @@ const hasher = JSON.stringify;
 const chooseToCompare = item => item.name;
 const secondaryCheckFunction = item => item.parent === "inbox";
 const collection = dataToDedupe;
+const resultAll = dedupeExtensive({
+  hasher,
+  chooseToCompare,
+  secondaryCheckFunction,
+  collection
+});
 
 test("dedupeExtensive returned array of objects deduped", t => {
   const msg = "should return array with length = 3";
-  const result = dedupeExtensive({
-    hasher,
-    chooseToCompare,
-    secondaryCheckFunction,
-    collection
-  })[0];
+  const result = resultAll[0];
   const actual = result.length;
   const expected = 3;
   t.is(actual, expected, msg);
@@ -124,12 +125,7 @@ test("dedupeExtensive returned array of objects deduped", t => {
 
 test("dedupeExtensive returned array of objects removed", t => {
   const msg = "should return array with length = 3";
-  const result = dedupeExtensive({
-    hasher,
-    chooseToCompare,
-    secondaryCheckFunction,
-    collection
-  })[1]; // <- removed items.
+  const result = resultAll[1];
   const actual = result.length;
   const expected = 3;
   t.is(actual, expected, msg);
@@ -142,4 +138,17 @@ test("dedupeExtensive returned array of objects removed", t => {
   const actual3 = ids.includes(27);
   const expected3 = true;
   t.is(actual3, expected3, msg3);
+});
+
+test("dedupeExtensive - no passed secondaryCheckFunction", t => {
+  const msg = "should return array with length = 5 (all duplicates)";
+  const resultWithoutSecon = dedupeExtensive({
+    hasher,
+    chooseToCompare,
+    collection
+  }); // <- removed items.
+  const result = resultWithoutSecon[1];
+  const actual = result.length;
+  const expected = 5;
+  t.is(actual, expected, msg);
 });
