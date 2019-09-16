@@ -1,154 +1,69 @@
-const test = require("ava");
-const { dedupe, dedupeExtensive } = require("./index.js");
+const { dedupeInit } = require("./index");
+
+const simpleArrayToDedupe = ["!", "1", "!", "2", "3", "!"];
 
 const dataToDedupe = [
   {
     id: 100,
     name: "thread1",
     path: "qb-api/lib/walk/test/fixtures/inbox/thread1",
-    stats: {},
-    cwd: "qb-api/lib/walk/test/fixtures",
-    crown: "/inbox/thread1",
-    parent: "inbox",
-    isFile: false
+    isFile: false,
+    comment: "unique item no 1"
   },
   {
     id: 101,
     name: "thread2",
-    path: "qb-api/lib/walk/test/fixtures/inbox/thread1",
-    stats: {},
-    cwd: "qb-api/lib/walk/test/fixtures",
-    crown: "/inbox/thread1",
-    parent: "inbox",
-    isFile: false
+    path: "qb-api/lib/walk/test/fixtures/inbox/thread2",
+    isFile: false,
+    comment: "unique item no 2"
   },
   {
-    id: 1,
+    id: 201,
     name: "thread2",
-    path: "qb-api/lib/walk/test/fixtures/threads/thread2",
-    stats: {},
-    cwd: "qb-api/lib/walk/test/fixtures",
-    crown: "/threads/thread2",
-    parent: "threads",
-    isFile: false
-  },
-  {
-    id: 11,
-    name: "thread1",
-    path: "qb-api/lib/walk/test/fixtures/threads/thread1",
-    stats: {},
-    cwd: "qb-api/lib/walk/test/fixtures",
-    crown: "/threads/thread1",
-    parent: "threads",
-    isFile: false
-  },
-  {
-    id: 23,
-    name: "thread3",
-    path: "qb-api/lib/walk/test/fixtures/inbox/thread3",
-    stats: {},
-    cwd: "qb-api/lib/walk/test/fixtures",
-    crown: "/inbox/thread3",
-    parent: "inbox",
-    isFile: false
-  },
-  {
-    id: 27,
-    name: "thread1",
-    path: "qb-api/lib/walk/test/fixtures/inbox/thread1",
-    stats: {},
-    cwd: "qb-api/lib/walk/test/fixtures",
-    crown: "/inbox/thread1",
-    parent: "inbox",
-    isFile: false
+    path: "qb-api/lib/walk/test/fixtures/inbox/thread2",
+    isFile: false,
+    comment: "duplicate of item id 101"
   }
 ];
 
-test("dedupe is function", t => {
-  const msg = "should be a function ";
-  const actual = typeof dedupe === "function";
-  const expected = true;
-  t.is(actual, expected, msg);
+test("should load module methods", () => {
+  const actualDedupeInit = typeof dedupeInit === "function";
+  expect(actualDedupeInit).toBe(true);
 });
 
-test("dedupe array of objects", t => {
-  const msg = "should return array with length = 3";
-  const result = dedupe(dataToDedupe, item => item.name);
-  const actual = result.length;
-  const expected = 3;
-  t.is(actual, expected, msg);
-  const msg2 = "should return array of object without object.id = 1";
-  const ids = result.map(item => item.id);
-  const actual2 = ids.includes(1);
-  const expected2 = false;
-  t.is(actual2, expected2, msg2);
-  const msg3 = "should return array of object with object.id = 23";
-  const actual3 = ids.includes(23);
-  const expected3 = true;
-  t.is(actual3, expected3, msg3);
+// zmieniłem api na dedupeInit. przeleć pozostałe testy. następnie ziplementuj fukcjonalności z dedupeExtensive do jednej metody dedupe.
+
+test("should dedupe simple array", () => {
+  const dedupe = dedupeInit();
+  const [actualUniqs, actualDups] = dedupe(simpleArrayToDedupe);
+  // actualUniqs - unique alements = real unique + first of duplicates
+  // actualDups - only duplicates
+  expect(actualUniqs).toEqual(["!", "1", "2", "3"]);
+  expect(actualUniqs.length).toBe(4);
+  expect(actualDups).toEqual(["!", "!"]);
+  expect(actualDups.length).toBe(2);
 });
 
-test("dedupeExtensive is function", t => {
-  const msg = "should be a function ";
-  const actual = typeof dedupeExtensive === "function";
-  const expected = true;
-  t.is(actual, expected, msg);
+test("should dedupe method return all items", () => {
+  // because all items are unique due to its id property
+  const dedupe = dedupeInit();
+  const [actualUniqs, actualDups] = dedupe(dataToDedupe);
+  const expectedUniqs = dataToDedupe.length; // method takes no effect on input data
+  expect(actualUniqs.length).toBe(expectedUniqs);
+  expect(actualDups.length).toBe(0);
 });
 
-const hasher = JSON.stringify;
-const chooseToCompare = item => item.name;
-const secondaryCheckFunction = item => item.parent === "inbox";
-const collection = dataToDedupe;
-const resultAll = dedupeExtensive({
-  hasher,
-  chooseToCompare,
-  secondaryCheckFunction,
-  collection
-});
-
-test("dedupeExtensive returned array of objects deduped", t => {
-  const msg = "should return array with length = 3";
-  const result = resultAll[0];
-  const actual = result.length;
-  const expected = 3;
-  t.is(actual, expected, msg);
-  const msg2 = "should return array of object without object.id = 27";
-  const ids = result.map(item => item.id);
-  const actual2 = ids.includes(27);
-  const expected2 = false;
-  t.is(actual2, expected2, msg2);
-  const msg3 = "should return array of object with object.id = 11";
-  const actual3 = ids.includes(11);
-  const expected3 = true;
-  t.is(actual3, expected3, msg3);
-});
-
-test("dedupeExtensive returned array of objects removed", t => {
-  const msg = "should return array with length = 3";
-  const result = resultAll[1];
-  const actual = result.length;
-  const expected = 3;
-  t.is(actual, expected, msg);
-  const msg2 = "should return array of object without object.id = 11";
-  const ids = result.map(item => item.id);
-  const actual2 = ids.includes(11);
-  const expected2 = false;
-  t.is(actual2, expected2, msg2);
-  const msg3 = "should return array of object with object.id = 27";
-  const actual3 = ids.includes(27);
-  const expected3 = true;
-  t.is(actual3, expected3, msg3);
-});
-
-test("dedupeExtensive - no passed secondaryCheckFunction", t => {
-  const msg = "should return array with length = 5 (all duplicates)";
-  const resultWithoutSecon = dedupeExtensive({
-    hasher,
-    chooseToCompare,
-    collection
-  }); // <- removed items.
-  const result = resultWithoutSecon[1];
-  const actual = result.length;
-  const expected = 5;
-  t.is(actual, expected, msg);
+test("should dedupe method dedupe array of objects by its name propery", () => {
+  const hasher = item => item.name;
+  const dedupe = dedupeInit({ hasher });
+  const [actualUniqs, actualDups] = dedupe(dataToDedupe);
+  // use hasher as comparison property for dedupe
+  const actualUniqLength = actualUniqs.length;
+  const actualUniqIds = actualUniqs.map(itm => itm.id);
+  expect(actualUniqLength).toBe(2);
+  expect(actualUniqIds).toEqual([100, 101]);
+  const actualDupsLength = actualDups.length;
+  const actualDupsIds = actualDups.map(itm => itm.id);
+  expect(actualDupsLength).toBe(1);
+  expect(actualDupsIds).toEqual([201]);
 });
