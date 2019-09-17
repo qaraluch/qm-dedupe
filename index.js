@@ -1,57 +1,30 @@
-function dedupe(array, hasher = JSON.stringify) {
-  const lookup = [];
-  const result = array.filter(item => {
-    const hashed = hasher(item);
-    const included = lookup.includes(hashed);
-    if (!included) {
-      lookup.push(hashed);
-      return !included;
-    }
-  });
-  return result;
-}
-
-function dedupeExtensive({
+function dedupeInit({
   hasher = JSON.stringify,
-  chooseToCompare,
-  secondaryCheckFunction = item => item,
-  collection
+  compareByProperty = item => item
 } = {}) {
-  const valuesToCheck = collection.map(chooseAndHash(hasher, chooseToCompare));
-  const duplicates = valuesToCheck.map(checkDups(valuesToCheck));
-  const endDuplicates = collection.map(
-    secondaryCheck(secondaryCheckFunction, duplicates)
-  );
-  const result = bifurcate(endDuplicates, collection);
-  return result;
+  const lookup = [];
+  const dups = [];
+  return array => {
+    const uniqs = array.reduce((accumulator, current) => {
+      const valueToCompare = hasher(compareByProperty(current));
+      valueToCompare || throwWhenFindNoProperty(); // in the item's objetct to compare
+      const isUniqueItem = !lookup.includes(valueToCompare);
+      if (isUniqueItem) {
+        lookup.push(valueToCompare);
+        return [...accumulator, current];
+      } else {
+        dups.push(current);
+        return accumulator;
+      }
+    }, []);
+    return [uniqs, dups];
+  };
 }
 
-const chooseAndHash = (hasher, chooseToCompare) => item =>
-  hashIt(hasher)(chooseToCompare(item));
-
-const hashIt = hasher => item =>
-  (hasher && hasher(item)) || JSON.stringify(item);
-
-const checkDups = valuesToCheck => (item, index) => {
-  const valuesToCheckWithoutActual = [...valuesToCheck];
-  valuesToCheckWithoutActual.splice(index, 1);
-  return valuesToCheckWithoutActual.includes(item);
-};
-
-const secondaryCheck = (secondaryCheckFunction, duplicates) => (
-  item,
-  index
-) => {
-  return duplicates[index] && secondaryCheckFunction(item);
-};
-
-const bifurcate = (filterArr, collection) =>
-  collection.reduce(
-    (acc, next, i) => (acc[filterArr[i] ? 1 : 0].push(next), acc),
-    [[], []]
-  );
+function throwWhenFindNoProperty() {
+  throw new Error("qm-dedupe: did not find property to compare!");
+}
 
 module.exports = {
-  dedupe,
-  dedupeExtensive
+  dedupeInit
 };

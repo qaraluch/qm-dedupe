@@ -31,8 +31,6 @@ test("should load module methods", () => {
   expect(actualDedupeInit).toBe(true);
 });
 
-// zmieniłem api na dedupeInit. przeleć pozostałe testy. następnie ziplementuj fukcjonalności z dedupeExtensive do jednej metody dedupe.
-
 test("should dedupe simple array", () => {
   const dedupe = dedupeInit();
   const [actualUniqs, actualDups] = dedupe(simpleArrayToDedupe);
@@ -54,8 +52,8 @@ test("should dedupe method return all items", () => {
 });
 
 test("should dedupe method dedupe array of objects by its name propery", () => {
-  const hasher = item => item.name;
-  const dedupe = dedupeInit({ hasher });
+  const compareByProperty = item => item.name;
+  const dedupe = dedupeInit({ compareByProperty });
   const [actualUniqs, actualDups] = dedupe(dataToDedupe);
   // use hasher as comparison property for dedupe
   const actualUniqLength = actualUniqs.length;
@@ -66,4 +64,12 @@ test("should dedupe method dedupe array of objects by its name propery", () => {
   const actualDupsIds = actualDups.map(itm => itm.id);
   expect(actualDupsLength).toBe(1);
   expect(actualDupsIds).toEqual([201]);
+});
+
+test("should throw an error when not find a property to compare", () => {
+  const compareByProperty = item => item.terefere;
+  const dedupe = dedupeInit({ compareByProperty });
+  expect(() => dedupe(dataToDedupe)).toThrow(
+    /did not find property to compare/
+  );
 });
