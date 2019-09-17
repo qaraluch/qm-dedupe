@@ -34,8 +34,6 @@ test("should load module methods", () => {
 test("should dedupe simple array", () => {
   const dedupe = dedupeInit();
   const [actualUniqs, actualDups] = dedupe(simpleArrayToDedupe);
-  // actualUniqs - unique alements = real unique + first of duplicates
-  // actualDups - only duplicates
   expect(actualUniqs).toEqual(["!", "1", "2", "3"]);
   expect(actualUniqs.length).toBe(4);
   expect(actualDups).toEqual(["!", "!"]);
@@ -55,7 +53,6 @@ test("should dedupe method dedupe array of objects by its name propery", () => {
   const compareByProperty = item => item.name;
   const dedupe = dedupeInit({ compareByProperty });
   const [actualUniqs, actualDups] = dedupe(dataToDedupe);
-  // use hasher as comparison property for dedupe
   const actualUniqLength = actualUniqs.length;
   const actualUniqIds = actualUniqs.map(itm => itm.id);
   expect(actualUniqLength).toBe(2);
