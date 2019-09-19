@@ -1,6 +1,6 @@
 {
   "name": "qm-dedupe",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "File system walker. Promisified, sugar-coated wrapper for npm klaw",
   "main": "index.js",
   "license": "MIT",

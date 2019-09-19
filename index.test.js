@@ -70,3 +70,5 @@ test("should throw an error when not find a property to compare", () => {
     /did not find property to compare/
   );
 });
+
+//TODO: move throw error to compare fn; not after hash;!

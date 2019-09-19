@@ -2,9 +2,9 @@ function dedupeInit({
   hasher = JSON.stringify,
   compareByProperty = item => item
 } = {}) {
-  const lookup = [];
-  const dups = [];
   return array => {
+    const lookup = [];
+    const dups = [];
     const uniqs = array.reduce((accumulator, current) => {
       const valueToCompare = hasher(compareByProperty(current));
       valueToCompare || throwWhenFindNoProperty(); // in the item's objetct to compare
